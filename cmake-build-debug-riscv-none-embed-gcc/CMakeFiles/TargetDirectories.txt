@@ -1,0 +1,3 @@
+E:/wch/ina_iic/cmake-build-debug-riscv-none-embed-gcc/CMakeFiles/ina_iic.elf.dir
+E:/wch/ina_iic/cmake-build-debug-riscv-none-embed-gcc/CMakeFiles/edit_cache.dir
+E:/wch/ina_iic/cmake-build-debug-riscv-none-embed-gcc/CMakeFiles/rebuild_cache.dir
