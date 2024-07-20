@@ -6,8 +6,8 @@
 //#include "system_ch32l103.h"
 #include "debug.h"
 
-#define READ_ADDR                  0x9e	 //A0=GND，A1=GND // R=1, W=0
-#define WRITE_ADDR                 0x82
+#define READ_ADDR                  0x80	 //A0=GND，A1=GND // R=1, W=0
+#define WRITE_ADDR                 0x80
 
 #define Config_Reg                 0x00
 #define Shunt_V_Reg                0x01//并联电压
@@ -20,12 +20,15 @@
 #define Man_ID_Reg                 0xFE  //0x5449
 #define ID_Reg                     0xFF  //0x2260
 
-#define calibrate_value            0x6400//25600
+#define calibrate_value            0x3200//25600
 
-u8 INA226_ReadByte(u8 reg_addr);
+__attribute__((unused)) u8 INA226_ReadByte(u8 reg_addr);
 u16 INA226_Read2Byte(u8 reg_addr) ;
-void INA226_WriteByte(u8 reg_addr,u8 reg_data);
+u16 INA226I2C1_Read2Byte(u8 reg_addr) ;
+
+__attribute__((unused)) void INA226_WriteByte(u8 reg_addr,u8 reg_data);
 void INA226_Write2Byte(u8 reg_addr,u16 reg_data);
+void INA226I2C1_Write2Byte(u8 reg_addr, u16 reg_data) ;
 void INA226_Init(void);
 void IIC_Init(u32 bound, u16 address) ;
 #endif

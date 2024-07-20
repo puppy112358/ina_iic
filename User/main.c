@@ -68,23 +68,51 @@ int main(void) {
     printf("SystemClk:%lu\r\n", SystemCoreClock);
     printf("ChipID:%08lx\r\n", DBGMCU_GetCHIPID());
     INA226_Init();
-    u16 mask_reg = 0x8000;//1000 0000 0000 0000电流上限警告
+    u16 mask_reg = 0x8001;//1000 0000 0000 0001电流上限警告
     INA226_Write2Byte(Mask_En_Reg,mask_reg);
-    u16 alert_reg = 0x960;//警报上限值3A
+    u16 alert_reg = 0x320;//警报上限值3A
     INA226_Write2Byte(Alert_Reg_limit,alert_reg);//
 
+
+    RCC_PB2PeriphClockCmd(RCC_PB2Periph_GPIOA, ENABLE);
+    RCC_PB2PeriphClockCmd(RCC_PB2Periph_GPIOB, ENABLE);
+
+    GPIO_InitTypeDef GPIO_InitStructure;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_15 | GPIO_Pin_8;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+    uint8_t led = 0;
+
     while(1){
+        if (led == 1) {
+            led = 0;
+        } else {
+            led = 1;
+        }
+        GPIO_WriteBit(GPIOA, GPIO_Pin_0, led);
+
+
+
         u16 Bus_V = INA226_Read2Byte(Bus_V_Reg);
         u16 Shunt_V = INA226_Read2Byte(Shunt_V_Reg);
         u16 Current = INA226_Read2Byte(Current_Reg);
-        u16 Power = INA226_Read2Byte(Power_Reg);
+//        u16 Power = INA226_Read2Byte(Power_Reg);
         u16 alert_flag = INA226_Read2Byte(Mask_En_Reg);
+        int flag = alert_flag & 0x10;
+        flag = flag << 4;
 
         printf("Bus_V  = %f mV\r\n",Bus_V*1.25);//9584
-        printf("Shunt_V= %f mV\r\n", Shunt_V*0.0025);//8000
-        printf("Current= %f  A\r\n", Current*0.0001);//10000
-        printf("Power  = %f  W\r\n", Power*0.025);//4792
-        printf("Alert_flag=%x\r\n",alert_flag);
+//        printf("Shunt_V= %f mV\r\n", Shunt_V*0.0002);//8000
+        printf("Current= %f  A\r\n", Current*0.0002);//10000
+//        printf("Power  = %f  W\r\n", Power*0.025);//4792
+//        printf("Alert_flag=%x\r\n",alert_flag);
+        printf("dinaya: %x\r\n",Shunt_V);
 
     }
 
